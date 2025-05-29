@@ -610,6 +610,12 @@ def register_page():
     if 'user_id' in session:
         return redirect(url_for('dashboard'))
     return render_template('register.html')
+    
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    """Render the dashboard template page"""
+    return render_template('dashboard.html')
 
 @app.route('/activities')
 @login_required
