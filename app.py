@@ -621,10 +621,9 @@ def dashboard():
 @login_required
 def activities_page():
     return render_template('activities.html')
-
-@app.route('/health-metrics')
+@app.route('/health_metrics')
 @login_required
-def health_metrics_page():
+def health_metrics():
     return render_template('health_metrics.html')
 
 @app.route('/goals')
