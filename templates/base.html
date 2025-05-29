@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellnessTracker - Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-bg: #0f172a;
+            --card-bg: #ffffff;
+            --surface-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .nav .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav .logo::before {
+            content: "💪";
+            font-size: 1.25rem;
+        }
+
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+
+        .nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: var(--secondary-color);
+        }
+
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--surface-bg);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary-color), #059669);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .table-container {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: var(--surface-bg);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .table tbody tr:hover {
+            background: var(--surface-bg);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .loading::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .alert {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .card-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <nav class="nav">
+                <div class="logo">WellnessTracker</div>
+                <ul>
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#">Activities</a></li>
+                    <li><a href="#">Health</a></li>
+                    <li><a href="#">Goals</a></li>
+                    <li><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Welcome back, Alex! 👋</h1>
+                <p class="page-subtitle">Here's how you're doing with your wellness journey</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">🏃</div>
+                    </div>
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Total Activities</div>
+                    <div class="stat-change positive">
+                        ↗ +3 this week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">🔥</div>
+                    </div>
+                    <div class="stat-number">2,450</div>
+                    <div class="stat-label">Calories Burned</div>
+                    <div class="stat-change positive">
+                        ↗ +180 this week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">📅</div>
+                    </div>
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-change positive">
+                        ↗ +2 from last week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">🎯</div>
+                    </div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Active Goals</div>
+                    <div class="stat-change positive">
+                        ↗ 67% completed
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🏃 Recent Activities</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>Duration</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Running</td>
+                                        <td>30 min</td>
+                                        <td>Today</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Yoga</td>
+                                        <td>45 min</td>
+                                        <td>Yesterday</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cycling</td>
+                                        <td>60 min</td>
+                                        <td>2 days ago</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💪 Log New Activity</h3>
+                    </div>
+                    <div class="card-content">
+                        <form id="activityForm">
+                            <div class="form-group">
+                                <label class="form-label" for="activityType">Activity Type</label>
+                                <select class="form-select" id="activityType" required>
+                                    <option value="">Select Activity</option>
+                                    <option value="running">🏃 Running</option>
+                                    <option value="walking">🚶 Walking</option>
+                                    <option value="cycling">🚴 Cycling</option>
+                                    <option value="swimming">🏊 Swimming</option>
+                                    <option value="gym">🏋️ Gym Workout</option>
+                                    <option value="yoga">🧘 Yoga</option>
+                                    <option value="other">🎯 Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="duration">Duration (minutes)</label>
+                                <input class="form-input" type="number" id="duration" min="1" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="notes">Notes (optional)</label>
+                                <textarea class="form-textarea" id="notes" rows="3" placeholder="How did it go?"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-success" style="width: 100%;">
+                                📝 Log Activity
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🎯 Active Goals</h3>
+                </div>
+                <div class="card-content">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Goal</th>
+                                    <th>Progress</th>
+                                    <th>Target Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Run 10km</td>
+                                    <td>7/10 km (70%)</td>
+                                    <td>End of month</td>
+                                    <td><span style="color: var(--secondary-color); font-weight: 500;">On track</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Lose 5kg</td>
+                                    <td>3/5 kg (60%)</td>
+                                    <td>Next month</td>
+                                    <td><span style="color: var(--warning-color); font-weight: 500;">Behind</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Exercise 4x/week</td>
+                                    <td>12/16 sessions</td>
+                                    <td>This month</td>
+                                    <td><span style="color: var(--secondary-color); font-weight: 500;">Ahead</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function logout() {
+            showAlert('Logout functionality would be implemented here', 'success');
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        document.getElementById('activityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const activityType = document.getElementById('activityType').value;
+            const duration = document.getElementById('duration').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (activityType && duration) {
+                showAlert(`${activityType} activity for ${duration} minutes logged successfully!`, 'success');
+                this.reset();
+            }
+        });
+
+        // Add some interactive animations
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

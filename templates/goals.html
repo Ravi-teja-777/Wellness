@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Goals - WellnessTracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #667eea;
+        }
+
+        .card-header h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .goal-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--progress-color, #667eea);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .goal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .goal-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .goal-type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .goal-type h4 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .goal-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d1edff;
+            color: #0c5460;
+        }
+
+        .status-at-risk {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .goal-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .progress-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .progress-values {
+            font-size: 1rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .progress-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--progress-color, #667eea);
+        }
+
+        .progress-bar-container {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--progress-color, #667eea), var(--progress-color-light, #8b9bff));
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .goal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .goal-dates {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .goal-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .update-btn {
+            background: #e0f2fe;
+            color: #0277bd;
+        }
+
+        .update-btn:hover {
+            background: #b3e5fc;
+        }
+
+        .delete-btn {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .delete-btn:hover {
+            background: #ffcdd2;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #f44336, #ef5350);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            body {
+                padding: 1rem;
+            }
+
+            .goal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .goal-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bullseye"></i> Wellness Goals</h1>
+            <p>Set, track, and achieve your health objectives</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Create New Goal</h3>
+                </div>
+                
+                <form id="goalForm">
+                    <div class="form-group">
+                        <label for="goalType"><i class="fas fa-tag"></i> Goal Type</label>
+                        <select id="goalType" name="goalType" required>
+                            <option value="">Select Goal Type</option>
+                            <option value="weight_loss">🏃‍♀️ Weight Loss</option>
+                            <option value="weight_gain">💪 Weight Gain</option>
+                            <option value="exercise_frequency">🏋️ Exercise Frequency</option>
+                            <option value="steps_daily">👟 Daily Steps</option>
+                            <option value="water_intake">💧 Daily Water Intake</option>
+                            <option value="sleep_hours">😴 Sleep Hours</option>
+                            <option value="calories_burn">🔥 Calories to Burn</option>
+                            <option value="other">📊 Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="currentValue"><i class="fas fa-play"></i> Current Value</label>
+                            <input type="number" id="currentValue" name="currentValue" step="0.1" required placeholder="Current value">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="targetValue"><i class="fas fa-flag-checkered"></i> Target Value</label>
+                            <input type="number" id="targetValue" name="targetValue" step="0.1" required placeholder="Target value">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="targetDate"><i class="fas fa-calendar-alt"></i> Target Date (optional)</label>
+                        <input type="date" id="targetDate" name="targetDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description"><i class="fas fa-sticky-note"></i> Description</label>
+                        <textarea id="description" name="description" rows="3" placeholder="Describe your goal and motivation..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%;">
+                        <i class="fas fa-rocket"></i> Create Goal
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Active Goals</h3>
+                </div>
+
+                <div class="stats-grid" id="statsGrid" style="display: none;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalGoals">0</div>
+                        <div class="stat-label">Total Goals</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completedGoals">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgProgress">0%</div>
+                        <div class="stat-label">Avg Progress</div>
+                    </div>
+                </div>
+                
+                <div id="goalsList" class="loading">Loading your goals...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated goals data
+        let goals = [
+            {
+                id: 1,
+                goal_type: "weight_loss",
+                current_value: 75,
+                target_value: 70,
+                target_date: "2025-08-01",
+                description: "Lose 5kg for better health and confidence",
+                created_at: "2025-05-01"
+            },
+            {
+                id: 2,
+                goal_type: "steps_daily",
+                current_value: 8500,
+                target_value: 10000,
+                target_date: "2025-12-31",
+                description: "Walk 10,000 steps daily to improve cardiovascular health",
+                created_at: "2025-05-15"
+            },
+            {
+                id: 3,
+                goal_type: "water_intake",
+                current_value: 1.8,
+                target_value: 3.0,
+                target_date: "2025-07-01",
+                description: "Increase daily water intake for better hydration",
+                created_at: "2025-05-20"
+            },
+            {
+                id: 4,
+                goal_type: "sleep_hours",
+                current_value: 6.5,
+                target_value: 8.0,
+                target_date: "2025-06-30",
+                description: "Get 8 hours of quality sleep every night",
+                created_at: "2025-05-25"
+            }
+        ];
+
+        const goalTypeConfig = {
+            weight_loss: { icon: 'fas fa-weight', color: '#e74c3c', bgColor: '#ffebee' },
+            weight_gain: { icon: 'fas fa-dumbbell', color: '#27ae60', bgColor: '#e8f5e8' },
+            exercise_frequency: { icon: 'fas fa-running', color: '#f39c12', bgColor: '#fff8e1' },
+            steps_daily: { icon: 'fas fa-walking', color: '#3498db', bgColor: '#e3f2fd' },
+            water_intake: { icon: 'fas fa-tint', color: '#00bcd4', bgColor: '#e0f2f1' },
+            sleep_hours: { icon: 'fas fa-bed', color: '#9c27b0', bgColor: '#f3e5f5' },
+            calories_burn: { icon: 'fas fa-fire', color: '#ff5722', bgColor: '#fff3e0' },
+            other: { icon: 'fas fa-star', color: '#607d8b', bgColor: '#f5f5f5' }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGoals();
+        });
+
+        document.getElementById('goalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const goalType = document.getElementById('goalType').value;
+            const currentValue = parseFloat(document.getElementById('currentValue').value);
+            const targetValue = parseFloat(document.getElementById('targetValue').value);
+            const targetDate = document.getElementById('targetDate').value;
+            const description = document.getElementById('description').value;
+            
+            const newGoal = {
+                id: goals.length + 1,
+                goal_type: goalType,
+                current_value: currentValue,
+                target_value: targetValue,
+                target_date: targetDate,
+                description: description,
+                created_at: new Date().toISOString()
+            };
+            
+            goals.push(newGoal);
+            showAlert('Goal created successfully!', 'success');
+            document.getElementById('goalForm').reset();
+            loadGoals();
+        });
+
+        function loadGoals() {
+            const goalsDiv = document.getElementById('goalsList');
+            const statsGrid = document.getElementById('statsGrid');
+            
+            // Show loading state
+            goalsDiv.innerHTML = '<div class="loading">Loading your goals...</div>';
+            
+            // Simulate API delay
+            setTimeout(() => {
+                if (goals.length === 0) {
+                    goalsDiv.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-bullseye"></i>
+                            <h4>No goals set yet</h4>
+                            <p>Create your first wellness goal to get started on your health journey!</p>
+                        </div>
+                    `;
+                    statsGrid.style.display = 'none';
+                    return;
+                }
+                
+                // Update stats
+                updateStats();
+                statsGrid.style.display = 'grid';
+                
+                let html = '';
+                
+                goals.forEach((goal, index) => {
+                    const progress = Math.min(Math.round((goal.current_value / goal.target_value) * 100), 100);
+                    const config = goalTypeConfig[goal.goal_type] || goalTypeConfig.other;
+                    
+                    let status = 'in-progress';
+                    let statusText = 'In Progress';
+                    let statusIcon = 'fa-clock';
+                    
+                    if (progress >= 100) {
+                        status = 'completed';
+                        statusText = 'Completed';
+                        statusIcon = 'fa-check-circle';
+                    } else if (goal.target_date && new Date(goal.target_date) < new Date() && progress < 100) {
+                        status = 'at-risk';
+                        statusText = 'At Risk';
+                        statusIcon = 'fa-exclamation-triangle';
+                    }
+                    
+                    html += `
+                    <div class="goal-card" style="--progress-color: ${config.color}; --progress-color-light: ${config.color}88; animation-delay: ${index * 0.1}s">
+                        <div class="goal-header">
+                            <div class="goal-type">
+                                <div class="goal-type-icon" style="background: ${config.color};">
+                                    <i class="${config.icon}"></i>
+                                </div>
+                                <div>
+                                    <h4>${formatGoalType(goal.goal_type)}</h4>
+                                </div>
+                            </div>
+                            <div class="goal-status status-${status}">
+                                <i class="fas ${statusIcon}"></i>
+                                ${statusText}
+                            </div>
+                        </div>
+                        
+                        <div class="goal-description">
+                            ${goal.description || 'No description provided'}
+                        </div>
+                        
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-values">
+                                    ${goal.current_value} / ${goal.target_value}
+                                </div>
+                                <div class="progress-percentage">
+                                    ${progress}%
+                                </div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="goal-footer">
+                            <div class="goal-dates">
+                                <span><i class="fas fa-calendar-plus"></i> Created: ${formatDate(goal.created_at)}</span>
+                                ${goal.target_date ? `<span><i class="fas fa-calendar-check"></i> Target: ${formatDate(goal.target_date)}</span>` : ''}
+                            </div>
+                            <div class="goal-actions">
+                                <button class="action-btn update-btn" onclick="updateGoal(${goal.id})">
+                                    <i class="fas fa-edit"></i> Update
+                                </button>
+                                <button class="action-btn delete-btn" onclick="deleteGoal(${goal.id})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+                
+                goalsDiv.innerHTML = html;
+            }, 500);
+        }
+
+        function updateStats() {
+            const totalGoals = goals.length;
+            const completedGoals = goals.filter(goal => (goal.current_value / goal.target_value) >= 1).length;
+            const avgProgress = totalGoals > 0 ? Math.round(goals.reduce((sum, goal) => sum + Math.min((goal.current_value / goal.target_value) * 100, 100), 0) / totalGoals) : 0;
+            
+            document.getElementById('totalGoals').textContent = totalGoals;
+            document.getElementById('completedGoals').textContent = completedGoals;
+            document.getElementById('avgProgress').textContent = avgProgress + '%';
+        }
+
+        function formatGoalType(type) {
+            return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function updateGoal(goalId) {
+            const goal = goals.find(g => g.id === goalId);
+            if (goal) {
+                const newValue = prompt(`Update current value for ${formatGoalType(goal.goal_type)}:`, goal.current_value);
+                if (newValue !== null && !isNaN(newValue)) {
+                    goal.current_value = parseFloat(newValue);
+                    showAlert('Goal updated successfully!', 'success');
+                    loadGoals();
+                }
+            }
+        }
+
+        function deleteGoal(goalId) {
+            if (confirm('Are you sure you want to delete this goal?')) {
+                goals = goals.filter(g => g.id !== goalId);
+                showAlert('Goal deleted successfully!', 'success');
+                loadGoals();
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                alertDiv.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    if (alertContainer.contains(alertDiv)) {
+                        alertContainer.removeChild(alertDiv);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
