@@ -45,6 +45,45 @@
         .header p {
             color: rgba(255, 255, 255, 0.8);
             font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 12px 24px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
         }
 
         .stats-grid {
@@ -245,6 +284,16 @@
             .header h1 {
                 font-size: 2rem;
             }
+
+            .nav-buttons {
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
         }
 
         .fade-in {
@@ -268,6 +317,20 @@
         <div class="header fade-in">
             <h1>Wellness Dashboard</h1>
             <p>Track your fitness journey and achieve your health goals</p>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="window.location.href='activities.html'">
+                    <span class="nav-icon">🏃</span>
+                    Activities
+                </button>
+                <button class="nav-btn" onclick="window.location.href='health_metrics.html'">
+                    <span class="nav-icon">📊</span>
+                    Health Metrics
+                </button>
+                <button class="nav-btn" onclick="window.location.href='goals.html'">
+                    <span class="nav-icon">🎯</span>
+                    Goals
+                </button>
+            </div>
         </div>
 
         <div class="stats-grid" id="statsGrid">
